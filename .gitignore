@@ -1,0 +1,10 @@
+*.txt
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+Debug/
+*.vcxproj.*
+*.vcxproj
