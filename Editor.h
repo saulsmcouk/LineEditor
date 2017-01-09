@@ -48,7 +48,6 @@ namespace editor {
 		std::string promptForPath();
 		int promptForInt();
 
-		RETURN_CODE setCurrentBuffer();
 		RETURN_CODE openBuffer();
 		RETURN_CODE editLine();
 		RETURN_CODE switchBuffer();

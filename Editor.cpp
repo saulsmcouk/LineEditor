@@ -3,76 +3,46 @@
 namespace editor {
 
 	int str(std::string s) {
-
 		std::stringstream s_s(s);
 		int i;
 		s_s >> i;
-
 		if (!i) {
 			return 0; //Stupid
 		}
-
 		return i;
 	}
-
+	
 	Editor::Editor() {
 		savePath = "";
-		//Give currentBuffer a value
 		Buffer _dontUseMe;
 		currentBuffer = _dontUseMe;
 		//Enters main editor loop
 		std::string command;
 		while (command != "Q") {
 			getline(std::cin, command);
-			//Yes, I know this is stupid.
-			//--Begin open buffer
 			if (command[0] == 'b')
 				openBuffer();
-
-			//--End open buffer
-			//--Begin edit line
 			else if (command[0] == 'e')
 				editLine();
-
-			//--End edit line
-			//--Begin v iew file
 			else if (command[0] == 'v')
 				std::cout << currentBuffer.getWholeFile(true);
-			//--End view file
-			//--Begin save buffer
 			else if (command[0] == 's') {
 				std::string path = promptForPath();
 				currentBuffer.saveContentsToFile(path);
 			}
-			//--End save buffer
-			//--Begin switch buffer
 			else if (command[0] == 'c')
 				switchBuffer();
-
 			else if (command[0] == 'x')
 				killBuffer();
-
 			else if (command[0] == 'h')
 				showHelp();
-
 			else if (command[0] == 'l')
-				editMultipleLines();
-			
-			//--End switch buffer
-				
+				editMultipleLines();	
 		}
-
 	}
-	Editor::~Editor() {
-	}
+	Editor::~Editor() {}
 
-	RETURN_CODE Editor::setCurrentBuffer()
-	{
-		return RETURN_CODE();
-	}
-
-	std::string Editor::promptForPath()
-	{
+	std::string Editor::promptForPath() {
 		std::cout << "/? ";
 		std::string path;
 		getline(std::cin, path);
@@ -84,17 +54,14 @@ namespace editor {
 		return path;
 	}
 
-	int Editor::promptForInt()
-	{
+	int Editor::promptForInt() {
 		std::cout << "#? ";
 		std::string _input;
 		getline(std::cin, _input);
-		return str(_input); //TODO: FIX THIS TERRIBLE FUNCTION!
-		
+		return str(_input); //TODO: Make this better
 	}
 
-	RETURN_CODE Editor::openBuffer()
-	{
+	RETURN_CODE Editor::openBuffer() {
 		Buffer b;
 		std::string path = promptForPath();
 		RETURN_CODE ret = b.populateFromFile(path);
@@ -103,8 +70,7 @@ namespace editor {
 		return RETURN_CODE::OK;
 	}
 
-	RETURN_CODE Editor::editLine()
-	{
+	RETURN_CODE Editor::editLine() {
 		int _lineNo = promptForInt();
 		std::cout << "\"\"? ";
 		std::string _newLineVal;
@@ -113,29 +79,23 @@ namespace editor {
 		return RETURN_CODE::OK;
 	}
 
-	RETURN_CODE Editor::switchBuffer()
-	{
+	RETURN_CODE Editor::switchBuffer() {
 		currentBuffer = buffers[chooseBuffer()];
 		return RETURN_CODE::OK;
-			
 	}
 
-	RETURN_CODE Editor::killBuffer()
-	{
+	RETURN_CODE Editor::killBuffer() {
 		buffers.erase(buffers.begin() + chooseBuffer());
 		return RETURN_CODE();
 	}
 
-	RETURN_CODE Editor::editMultipleLines()
-	{
+	RETURN_CODE Editor::editMultipleLines() {
 		int startHere = promptForInt();
 		currentBuffer.UpdateMultipleLines(startHere);
 		return RETURN_CODE::OK;
 	}
 
-	RETURN_CODE Buffer::UpdateMultipleLines(int _beginLineNo)
-	{
-		
+	RETURN_CODE Buffer::UpdateMultipleLines(int _beginLineNo) {
 		std::string line = "xyz";
 		int i = 0;
 		while (!line.empty()) {
@@ -147,20 +107,16 @@ namespace editor {
 		return RETURN_CODE::OK;
 	}
 
-	std::string Editor::getBufferList()
-	{
+	std::string Editor::getBufferList() {
 		unsigned int i = 0;
 		std::string fancyBufferList;
 		for (std::vector<Buffer>::iterator it = buffers.begin(); it < buffers.end(); it++, i++) {
 			fancyBufferList =  fancyBufferList + (*it).name + " - " + std::to_string(i) + "\n";
 		}
-
 		return fancyBufferList;
-
 	}
 
-	int Editor::chooseBuffer()
-	{
+	int Editor::chooseBuffer() {
 		std::cout << getBufferList();
 		int bufferNo = promptForInt();
 		if ((bufferNo < buffers.size()) && (bufferNo >= 0)) {
@@ -169,15 +125,9 @@ namespace editor {
 		return 0;
 	}
 
-	void const Editor::showHelp()
-	{
-		std::cout << "Welcome to a terrible, terrible line based editor that I wrote because I was bored. No help for you!" << std::endl;
+	void const Editor::showHelp() {
+		std::cout << "Line based editor - have a look at the code on https://github.com/saulsmcouk/LineEditor" << std::endl;
 	}
-
-	/*std::ofstream Editor::ReadFile() {
-		return std::ofstream();
-	}*/
-
 
 	RETURN_CODE Buffer::populateFromFile(std::string path) {
 		std::deque<std::string> _lines;
